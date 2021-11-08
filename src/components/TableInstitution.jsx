@@ -1,4 +1,4 @@
-import React, { useState, setState, state } from 'react';
+import React, { useState } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -48,7 +48,7 @@ const rows = [
 
 export default function TableInstitution() {
     const [open, setOpen] = useState(false);
-    const [institutionInfo, setInstitutionInfo] = useState([])
+    const [institutionInfo] = useState([])
 
 
     const updateInstitutionInfo = (value) => (event) => {

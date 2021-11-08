@@ -1,14 +1,6 @@
 import { createTheme } from '@mui/material/styles'
 
 const theme = createTheme({
-  "object": {
-    "title": {
-        "main": {
-            "fontSize": "12px",
-            "fontFamily": "Arial"
-        }
-    }
-},
   palette: {
     primary: {
       light: '#D4FBFF',
@@ -73,7 +65,7 @@ const theme = createTheme({
       fontSize: '0.875rem',
       lineHeight: '1rem',
       letterSpacing: '0rem'
-    }
+    },
   },
   spacing: 6
 })

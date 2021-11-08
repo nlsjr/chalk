@@ -40,19 +40,21 @@ export default function BuyTokens() {
                     <Grid container spacing={3}>
                         <Grid item xs={12}>
                             <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                            <TextField 
-                                size="small" 
-                                id="amount" 
-                                label="Quantidade Tokens" 
-                                variant="outlined" 
-                                required
-                                value={amount}
-                                onChange={e => setAmount(e.target.value)}
-                            />
+                            <form onSubmit={handleSubmit}>
+                                <TextField 
+                                    size="small" 
+                                    id="amount" 
+                                    label="Quantidade Tokens" 
+                                    variant="outlined" 
+                                    required
+                                    value={amount}
+                                    onChange={e => setAmount(e.target.value)}
+                                />
 
-                            <div>
-                                <Button sx={{color: 'white', mt: 2}} type="submit" variant="contained" color="primary">Comprar</Button>
-                            </div>
+                                <div>
+                                    <Button sx={{color: 'white', mt: 2}} type="submit" variant="contained" color="primary">Comprar</Button>
+                                </div>
+                            </form>
                             </Paper>
                         </Grid>
                     </Grid>
