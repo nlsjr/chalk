@@ -7,6 +7,7 @@ import BuyTokens from "./components/BuyTokens";
 import { ThemeProvider } from '@mui/material/styles';
 import theme from './styles/theme'
 import Login from "./components/Login";
+import Quotation from "./components/Quotation";
 
 export default function App() {
     return (
@@ -16,6 +17,7 @@ export default function App() {
                 <Route path="/institution" element={<Institution />}/>
                 <Route path="/buy" element={<BuyTokens />}/>
                 <Route path="/login" element={<Login />}/>
+                <Route path="/quotation" element={<Quotation />}/>
             </Routes>
         </ThemeProvider>
     );

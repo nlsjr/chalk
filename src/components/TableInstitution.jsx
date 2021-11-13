@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -12,60 +12,114 @@ import Drawer from '@mui/material/Drawer';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { Grid } from '@mui/material';
+// import web3Provider from '../web3Provider';
+import dracmaToken from '../ethereum/instance';
+import institutionJson from '../mock/institutions.json';
+import CustomSnackbar from './CustomSnackbar';
 
-// Generate Order Data
-function createData(id, address, balance) {
-    return { id, address, balance };
-}
+const ethers = require('ethers');
 
-const rows = [
-    createData(
-        '0x64613031343338322d393261632d346334332d383530652d3431363334396438',
-        '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2',
-        '500'
-    ),
-    createData(
-        '0x65393932356236632d373332372d343237302d396133342d6163643632626165',
-        '0xCA35b7d915458EF540aDe6068dFe2F44E8fa733c',
-        '454'
-    ),
-    createData(
-        '0x64613031343338322d39326d632d346334332d383530652d3431363334396438',
-        '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2',
-        '1000'
-    ),
-    createData(
-        '0x64613031343338322d39361632d346334332ed383530652d3431363334396438',
-        '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2',
-        '999'
-    ),
-    createData(
-        '0x64613031343338322d3932616d2d346334332d383530652d3431363334396438',
-        '0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2',
-        '159'
-    )
-];
 
 export default function TableInstitution() {
     const [open, setOpen] = useState(false);
-    const [institutionInfo] = useState([])
+    const [institutionInfo, setInstitutionInfo] = useState({});
+    const [listInstituionInfo, setListInstituionInfo] = useState([]);
+    const [signerAddress, setSignerAddress] = useState(null);
+    const [amount, setAmount] = useState('');
+    const [recipient, setRecipient] = useState('');
+    const [openSnackBar, setOpenSnackBar] = useState(false);
+    const [messageSnackBar, setMessageSnackBar] = useState('');
+    const [severitySnackBar, setSeveritySnackBar] = useState('success');
 
+    
+    useEffect(async ()  => {
+        function fetchData() {
+
+            institutionJson.map(async inst => {
+                const id = inst
+                const address = await dracmaToken.institutionsId(id);
+                const balance = await dracmaToken.balanceOf(address);
+
+                let instInfo = {id, address, balance: ethers.BigNumber.from(balance).toString()}
+
+                setListInstituionInfo((state) => ([...state, instInfo]))
+            })
+        }
+
+        await fetchData();
+    }, []);
 
     const updateInstitutionInfo = (value) => (event) => {
+        newProvider();
         institutionInfo.id = value.id;
         institutionInfo.balance = value.balance;
         institutionInfo.address = value.address;
         setOpen(!open);
     };
 
+    async function newProvider() {
+        const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+
+        // Prompt user for account connections
+        await provider.send("eth_requestAccounts", []);
+        setSignerAddress(await provider.getSigner().getAddress());
+    }
+
+    async function transfer() {
+        const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+
+        const signer = provider.getSigner();
+
+        const address = await provider.getSigner().getAddress();
+        
+        if(address !== institutionInfo.address) {
+            setOpenSnackBar(true);
+            setMessageSnackBar(`Você deve selecionar o address ${address} no Metamask`);
+            setSeveritySnackBar('error');
+            return;
+        }
+
+        const newDracmaToken = dracmaToken.connect(signer);
+
+        newDracmaToken.transfer(recipient, amount).then((result) => {
+            setOpenSnackBar(true);
+            setMessageSnackBar("Transação para a compra dos tokens enviada.");
+            setSeveritySnackBar('info');
+        }).catch(error => {
+            if(error.error !== undefined) {
+                setOpenSnackBar(true);
+                setMessageSnackBar(error.error.code + " - " + error.error.message);
+                setSeveritySnackBar('error');
+            } else {
+                setOpenSnackBar(true);
+                setMessageSnackBar(error.code + " - " + error.message);
+                setSeveritySnackBar('warning');
+            }
+        });
+    }
+
     const toggleDrawerClose = () => {
         setOpen(false);
+    };
+
+    const handleCloseSnackBar = () => {
+        setOpenSnackBar(!openSnackBar)
+    }
+
+    const handleSubmit = e => {
+        e.preventDefault();
+        transfer();
     };
 
     return (
         <React.Fragment>
             <Title>Instituições cadastradas</Title>
-            
+            <CustomSnackbar 
+                openSnackbar={openSnackBar} 
+                message={messageSnackBar}
+                severity={severitySnackBar}
+                handleCloseSnackBar={handleCloseSnackBar}
+            />
             <Table size="small">
                 <TableHead>
                 <TableRow>
@@ -76,19 +130,19 @@ export default function TableInstitution() {
                 </TableRow>
                 </TableHead>
                 <TableBody>
-                {rows.map((row) => (
-                    <TableRow key={row.id}>
-                        <TableCell sx={{ fontSize: 8}} >{row.id}</TableCell>
-                        <TableCell sx={{ fontSize: 8}} >{row.address}</TableCell>
-                        <TableCell sx={{ fontSize: 8}} align="center">{row.balance}</TableCell>
-                        <TableCell align="center">
-                        <IconButton size="small" onClick={updateInstitutionInfo(row)}>
-                            <TransferWithinAStationIcon />
-                        </IconButton>
-                        </TableCell>
-                    </TableRow>
+                    {listInstituionInfo.map((instInfo, index) => (
+                        <TableRow key={index}>
+                            <TableCell sx={{ fontSize: 8}} >{instInfo.id}</TableCell>
+                            <TableCell sx={{ fontSize: 8}} >{instInfo.address}</TableCell>
+                            <TableCell sx={{ fontSize: 8}} align="center">{instInfo.balance}</TableCell>
+                            <TableCell align="center">
+                            <IconButton size="small" onClick={updateInstitutionInfo(instInfo)}>
+                                <TransferWithinAStationIcon />
+                            </IconButton>
+                            </TableCell>
+                        </TableRow>
+                    ))}
                         
-                ))}
                 </TableBody>
             </Table>
             <Drawer
@@ -149,37 +203,43 @@ export default function TableInstitution() {
                         
                         <Grid item xs>
                             <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                                <Typography
-                                    variant="h6"
-                                    noWrap
-                                    sx={{fontSize:12}}
-                                    >
-                                    Transferir para
-                                </Typography>
-                                <TextField 
-                                    size="small" 
-                                    id="addressStudent" 
-                                    label="Wallet do Aluno" 
-                                    variant="outlined" 
-                                    required
-                                    margin="dense"
-                                />
-                                <Typography
-                                    variant="h6"
-                                    noWrap
-                                    sx={{fontSize:12}}
-                                    >
-                                    A quantidade de tokens
-                                </Typography>
-                                <TextField 
-                                    size="small" 
-                                    id="amountStudent" 
-                                    label="Quantidade Tokens" 
-                                    variant="outlined" 
-                                    required
-                                    margin="dense"
-                                />
-                                <Button sx={{color: 'white', mt: 2}} type="submit" variant="contained" color="primary">Transferir</Button>
+                                <form onSubmit={handleSubmit}>
+                                    <Typography
+                                        variant="h6"
+                                        noWrap
+                                        sx={{fontSize:12}}
+                                        >
+                                        Transferir para
+                                    </Typography>
+                                    <TextField 
+                                        size="small" 
+                                        id="addressStudent" 
+                                        label="Wallet do Aluno" 
+                                        variant="outlined" 
+                                        required
+                                        fullWidth
+                                        margin="dense"
+                                        onChange={e => setRecipient(e.target.value)}
+                                    />
+                                    <Typography
+                                        variant="h6"
+                                        noWrap
+                                        sx={{fontSize:12}}
+                                        >
+                                        A quantidade de tokens
+                                    </Typography>
+                                    <TextField 
+                                        size="small" 
+                                        id="amountStudent" 
+                                        label="Quantidade Tokens" 
+                                        variant="outlined" 
+                                        required
+                                        fullWidth
+                                        margin="dense"
+                                        onChange={e => setAmount(e.target.value)}
+                                    />
+                                    <Button sx={{color: 'white', mt: 2}} type="submit" variant="contained" color="primary">Transferir</Button>
+                                </form>
                             </Paper>
                         </Grid>
                         

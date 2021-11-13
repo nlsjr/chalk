@@ -232,3 +232,22 @@ module.exports = {
     - Ether: 0.000030046
     - Dolar: $0.12
     - json input: {"0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2","10"}
+
+## Integração interface
+
+- **Institution1** 
+    - **ID**: 0x38613433646330372d633664662d343839332d613761632d3132326235636536
+    - **address**: 0xb79932D16B4bd12044936b6875DCE08F0a53Fa82
+
+- **Institution2**
+    - **ID**: 0x37636537343036342d343462302d313165632d383164332d3032343261633133
+    - **address**: 0xe7337F7b470daA4D219269Cf777e8B06c9270927
+
+- **Aluno**
+    - **address**: 0xb7Eb8BcE73F9c7006c9b8DCE72599aC37469bFc6
+
+## Obsevações
+
+### Estudar
+
+- Waffle, and Hardhat
