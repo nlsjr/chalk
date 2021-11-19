@@ -2,6 +2,7 @@ import { LockOutlined } from '@mui/icons-material';
 import { Avatar, Button, Checkbox, FormControlLabel, Grid, TextField, Typography, Paper, Link } from '@mui/material';
 import { Box } from '@mui/system';
 import React from 'react';
+import Image from '../images/blockchain.jpg'; // Import using relative path
 
 export default function Login() {
     const handleSubmit = (event) => {
@@ -18,7 +19,7 @@ export default function Login() {
         <Grid container component="main" sx={{ height: '100vh' }}>
             <Grid item xs={false} sm={4} md={7} 
                 sx={{
-                    backgroundImage: 'url(https://source.unsplash.com/random)',
+                    backgroundImage: `url(${Image})`,
                     backgroundRepeat: 'no-repeat',
                     backgroundColor: (t) =>
                     t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],

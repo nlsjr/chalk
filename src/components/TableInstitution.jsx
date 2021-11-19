@@ -123,18 +123,18 @@ export default function TableInstitution() {
             <Table size="small">
                 <TableHead>
                 <TableRow>
-                    <TableCell sx={{ fontSize: 12 }}>ID da instituição</TableCell>
-                    <TableCell sx={{ fontSize: 12 }}>Endereço público da carteira</TableCell>
-                    <TableCell sx={{ fontSize: 12}} align="center">Saldo</TableCell>
-                    <TableCell sx={{ fontSize: 12 }} align="center">Transferir</TableCell>
+                    <TableCell>ID da instituição</TableCell>
+                    <TableCell>Endereço público da carteira</TableCell>
+                    <TableCell align="center">Saldo</TableCell>
+                    <TableCell align="center">Transferir</TableCell>
                 </TableRow>
                 </TableHead>
                 <TableBody>
                     {listInstituionInfo.map((instInfo, index) => (
                         <TableRow key={index}>
-                            <TableCell sx={{ fontSize: 8}} >{instInfo.id}</TableCell>
-                            <TableCell sx={{ fontSize: 8}} >{instInfo.address}</TableCell>
-                            <TableCell sx={{ fontSize: 8}} align="center">{instInfo.balance}</TableCell>
+                            <TableCell >{instInfo.id}</TableCell>
+                            <TableCell >{instInfo.address}</TableCell>
+                            <TableCell align="center">{instInfo.balance}</TableCell>
                             <TableCell align="center">
                             <IconButton size="small" onClick={updateInstitutionInfo(instInfo)}>
                                 <TransferWithinAStationIcon />

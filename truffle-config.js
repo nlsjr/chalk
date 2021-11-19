@@ -20,6 +20,7 @@
 
  const HDWalletProvider = require('@truffle/hdwallet-provider');
  require('dotenv').config();
+ console.log(process.env.REACT_APP_NETWORK_ID)
  module.exports = {
    /**
     * Networks define how you connect to your ethereum client and let you set the
@@ -40,7 +41,7 @@
      },
      
      ropsten: {
-       provider: () => new HDWalletProvider(process.env.REACT_APP_MNEMONIC, process.env.INFURA_URL),
+       provider: () => new HDWalletProvider(process.env.REACT_APP_MNEMONIC, process.env.REACT_APP_INFURA_URL),
        network_id: process.env.REACT_APP_NETWORK_ID,
        gas: 5500000,    
        confirmations: 2,

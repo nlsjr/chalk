@@ -94,10 +94,9 @@ module.exports = {
 ```$ truffle migrate --network ropsten```
 
 ##### Smart Contract Migrations
-- Transaction hash: 0xed441a6a621b30bb86c0214b5a4488aaef51ee9284263f44b08c5d6efef01979
-- Contract Address: 0x27008013f3A2421D8Da88411c5527a9Af4f8cfA4
+- Transaction hash:    0xed441a6a621b30bb86c0214b5a4488aaef51ee9284263f44b08c5d6efef01979
+- Contract Address:    0x27008013f3A2421D8Da88411c5527a9Af4f8cfA4
 - Blocks: 1            Seconds: 25
-- contract address:    0x27008013f3A2421D8Da88411c5527a9Af4f8cfA4
 - block number:        11311435
 - block timestamp:     1635364769
 - account:             0x864d6654D79e5BD295234d9577d07104AAe05968
